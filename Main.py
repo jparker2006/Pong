@@ -51,6 +51,8 @@ class MainGame():
                 keys = pygame.key.get_pressed()
                 if keys[K_SPACE]:
                     self.Ball.start()
+                elif keys[K_ESCAPE]:
+                    sys.exit()
 
     def run(self):
         while True:
