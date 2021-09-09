@@ -1,11 +1,10 @@
 import pygame
 import random
 
-resolution = (800,600)
 c_white = (255, 255, 255)
 
 class Paddle:
-    def __init__(self, xPos, yPos = resolution[1] / 2 - 55):
+    def __init__(self, xPos, yPos = 245): # y is center of y
         self.nXPos = xPos
         self.nYPos = yPos
         self.bOnKey = False

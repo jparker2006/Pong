@@ -13,18 +13,21 @@ c_black = (0, 0, 0)
 class MainGame():
     def __init__(self):
         pygame.init()
-        self.setTitle = pygame.display.set_caption('Pong')
-        self.screen = pygame.display.set_mode(resolution)
-        self.clock = pygame.time.Clock()
+        self.setTitle = pygame.display.set_caption('Pong') # set window title
+        self.screen = pygame.display.set_mode(resolution) # set window resolution
+        self.clock = pygame.time.Clock() # set fps clock
+
         self.Ball = Ball()
         self.PaddleA = Paddle(10) # W and A
         self.PaddleB = Paddle(resolution[0] - 40) # keyup and keydown
 
+        self.rect2 = pygame.Rect(100, 100, 100, 110)
+
     def handleEvents(self):
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if QUIT == event.type:
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
+            elif pygame.KEYDOWN == event.type:
                 keys = pygame.key.get_pressed()
                 if keys[K_SPACE]:
                     self.Ball.start()
@@ -38,11 +41,8 @@ class MainGame():
                     self.PaddleB.Move(True)
                 elif keys[K_DOWN]:
                     self.PaddleB.Move(False)
-            #elif event.type == pygame.KEYUP:
-                #if event.key == pygame.K_w or pygame.K_s == event.key:
-                    #self.PaddleA.StopMovement()
-                #elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                    #self.PaddleB.StopMovement()
+                else:
+                    print("unknown keystroke")
 
     def run(self):
         while True:
@@ -50,6 +50,12 @@ class MainGame():
             self.Ball.update()
 
             self.screen.fill(c_black)
+
+            # basic collision detection example
+            point = pygame.mouse.get_pos()
+            collide = self.rect2.collidepoint(point)
+            color = (255, 0, 0) if collide else (255, 255, 255)
+            pygame.draw.rect(self.screen, color, self.rect2)
 
             self.Ball.draw(self.screen)
             self.PaddleA.draw(self.screen)
