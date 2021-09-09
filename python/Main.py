@@ -1,5 +1,3 @@
-# ball should change velo after hitting top/bottom wall or paddle
-
 import pygame
 import random
 import sys
@@ -9,10 +7,8 @@ from Ball import Ball
 pygame.init()
 
 resolution = (800,600)
-# colors
 c_white = (255, 255, 255)
 c_black = (0, 0, 0)
-# colors end
 
 class MainGame():
     def __init__(self):
@@ -62,5 +58,5 @@ class MainGame():
             self.clock.tick(60) # regulate FPS
             pygame.display.flip()
 
-if __name__ == "__main__":
+if "__main__" == __name__:
     MainGame().run()

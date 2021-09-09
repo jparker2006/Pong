@@ -1,4 +1,5 @@
 import pygame
+import random
 
 resolution = (800,600)
 c_white = (255, 255, 255)
@@ -9,8 +10,10 @@ class Paddle:
         self.nYPos = yPos
         self.bOnKey = False
         self.type = "Paddle"
+
     def draw(self, surface):
         pygame.draw.rect(surface, c_white, pygame.Rect(self.nXPos, self.nYPos, 30, 110))
+
     def Move(self, bUpOrDown): # True is up, False is down
         if bUpOrDown:
             self.nYPos -= 8
