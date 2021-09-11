@@ -4,7 +4,7 @@ import random
 c_white = (255, 255, 255)
 
 class Paddle:
-    def __init__(self, xPos, yPos = 150): # y is center of y
+    def __init__(self, xPos, yPos = 150): # y is center of y axis on screen
         self.nXPos = xPos
         self.nYPos = yPos
         self.bOnKey = False

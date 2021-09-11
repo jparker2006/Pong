@@ -6,12 +6,9 @@ from Paddle import Paddle
 from Ball import Ball
 pygame.init()
 
-# weird thing first hit after game start doesnt detect collision
-
 resolution = (600,400)
 c_white = (255, 255, 255)
 c_black = (0, 0, 0)
-c_blue = (0, 0, 255)
 
 class MainGame():
     def __init__(self):
@@ -25,16 +22,14 @@ class MainGame():
         self.PaddleB = Paddle(resolution[0] - 30) # keyup and keydown
 
         self.font = pygame.font.Font('freesansbold.ttf', 48)
-        self.text = self.font.render(' 0 | 0 ', True, c_white, c_blue)
+        self.text = self.font.render(' 0 | 0 ', True, c_white)
         self.textRect = self.text.get_rect()
         self.textRect.center = (resolution[0] // 2, 30)
 
-    def handleEvents(self):
+    def handleEvents(self): # top + 90
         for event in pygame.event.get():
             if QUIT == event.type:
                 sys.exit()
-            # probably let user on paddle 2 move with mouse
-            # improve paddle movement with while timer w counter
             elif pygame.KEYDOWN == event.type:
                 keys = pygame.key.get_pressed()
                 if keys[K_ESCAPE]:
@@ -55,10 +50,13 @@ class MainGame():
             self.handleEvents()
             self.Ball.update()
 
-            if (self.Ball.GetXPos() > 40 and self.Ball.GetXPos() < 50) : # have to give the pixels room for error
-                self.Ball.HitPaddle()
-            if (self.Ball.GetXPos() > 550 and self.Ball.GetXPos() < 570) :
-                self.Ball.HitPaddle()
+            # collision detection
+            if (self.Ball.GetXPos() > 40 and self.Ball.GetXPos() < 50): # have to give the pixels room for error
+                if (self.Ball.GetYPos() >= self.PaddleA.GetYPos() - 15 and self.Ball.GetYPos() <= self.PaddleA.GetYPos() + 105):
+                    self.Ball.HitPaddle()
+            if (self.Ball.GetXPos() > 550 and self.Ball.GetXPos() < 570):
+                if (self.Ball.GetYPos() >= self.PaddleB.GetYPos() - 15 and self.Ball.GetYPos() <= self.PaddleB.GetYPos() + 105):
+                    self.Ball.HitPaddle()
 
             self.screen.fill(c_black)
 
@@ -73,7 +71,6 @@ class MainGame():
 
     def PauseGame(self):
         print("paused")
-        # write game pausing here
 
 if "__main__" == __name__:
     MainGame().run()
