@@ -6,7 +6,9 @@ from Paddle import Paddle
 from Ball import Ball
 pygame.init()
 
-resolution = (800,600)
+# weird thing first hit after game start doesnt detect collision
+
+resolution = (600,400)
 c_white = (255, 255, 255)
 c_black = (0, 0, 0)
 
@@ -21,18 +23,16 @@ class MainGame():
         self.PaddleA = Paddle(10) # W and A
         self.PaddleB = Paddle(resolution[0] - 40) # keyup and keydown
 
-        self.rect2 = pygame.Rect(100, 100, 100, 110)
-
     def handleEvents(self):
         for event in pygame.event.get():
             if QUIT == event.type:
                 sys.exit()
+            # probably let user on paddle 2 move with mouse
+            # improve paddle movement with while timer w counter
             elif pygame.KEYDOWN == event.type:
                 keys = pygame.key.get_pressed()
-                if keys[K_SPACE]:
-                    self.Ball.start()
-                elif keys[K_ESCAPE]:
-                    sys.exit()
+                if keys[K_ESCAPE]:
+                    self.PauseGame()
                 elif keys[K_w]:
                     self.PaddleA.Move(True)
                 elif keys[K_s]:
@@ -51,18 +51,21 @@ class MainGame():
 
             self.screen.fill(c_black)
 
-            # basic collision detection example
-            point = pygame.mouse.get_pos()
-            collide = self.rect2.collidepoint(point)
-            color = (255, 0, 0) if collide else (255, 255, 255)
-            pygame.draw.rect(self.screen, color, self.rect2)
-
             self.Ball.draw(self.screen)
             self.PaddleA.draw(self.screen)
             self.PaddleB.draw(self.screen)
 
+            if (40 == self.Ball.GetXPos()) :
+                self.Ball.HitPaddle()
+            if (550 == self.Ball.GetXPos()) :
+                self.Ball.HitPaddle()
+
             self.clock.tick(60) # regulate FPS
             pygame.display.flip()
+
+    def PauseGame(self):
+        print("paused")
+        # write game pausing here
 
 if "__main__" == __name__:
     MainGame().run()
