@@ -1,3 +1,0 @@
-cd Pong
-cd python
-python Main.py
