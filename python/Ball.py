@@ -22,20 +22,25 @@ class Ball:
         self.nXPos += self.dXVel
         self.nYPos += self.dYVel
 
-        if (self.nXPos <= 12 or self.nXPos >= resolution[0] - 12): # score game here
-            self.nXPos =  resolution[0] / 2
-            self.nYPos = resolution[1] / 2
-            nRandXVelo = random.randint(-5, 5)
-            while 0 == nRandXVelo:
-                nRandXVelo = random.randint(-5, 5)
-            self.dXVel = nRandXVelo
-            self.dYVel = random.randint(-6, 6)
+        if (self.nXPos <= 0 or self.nXPos >= resolution[0]): # score game here
+            print("scorer")
+            #self.nXPos =  resolution[0] / 2
+            #self.nYPos = resolution[1] / 2
+            #nRandXVelo = random.randint(-6, 6)
+            #while 0 == nRandXVelo:
+                #nRandXVelo = random.randint(-6, 6)
+            #self.dXVel = nRandXVelo
+            #self.dYVel = random.randint(-3, 3)
 
-        if (self.nYPos <= 12 or self.nYPos >= resolution[1] - 12): #bounce off walls
+        if (self.nYPos <= 15 or self.nYPos >= resolution[1] - 15): #bounce off walls
             if (self.dYVel > 0):
-                self.dYVel = -random.randint(2, 6)
+                self.dYVel = -random.randint(1, 5)
+                if (self.dXVel < 0):
+                    self.dXVel = -random.randint(1, 5)
+                else:
+                    self.dXVel = random.randint(1, 5)
             else:
-                self.dYVel = random.randint(2, 6)
+                self.dYVel = random.randint(1, 5)
 
     def GetYPos(self):
         return self.nYPos;
@@ -44,3 +49,9 @@ class Ball:
 
     def HitPaddle(self):
         self.dXVel *= -1
+        if (self.dXVel < 0):
+            self.dXVel -= random.random()
+        else:
+            self.dXVel += random.random()
+        self.dYVel = random.randint(-3, 3)
+        #self.dYVel = random.randint(2, 4)

@@ -11,6 +11,7 @@ pygame.init()
 resolution = (600,400)
 c_white = (255, 255, 255)
 c_black = (0, 0, 0)
+c_blue = (0, 0, 255)
 
 class MainGame():
     def __init__(self):
@@ -21,7 +22,12 @@ class MainGame():
 
         self.Ball = Ball()
         self.PaddleA = Paddle(10) # W and A
-        self.PaddleB = Paddle(resolution[0] - 40) # keyup and keydown
+        self.PaddleB = Paddle(resolution[0] - 30) # keyup and keydown
+
+        self.font = pygame.font.Font('freesansbold.ttf', 48)
+        self.text = self.font.render(' 0 | 0 ', True, c_white, c_blue)
+        self.textRect = self.text.get_rect()
+        self.textRect.center = (resolution[0] // 2, 30)
 
     def handleEvents(self):
         for event in pygame.event.get():
@@ -49,16 +55,18 @@ class MainGame():
             self.handleEvents()
             self.Ball.update()
 
+            if (self.Ball.GetXPos() > 40 and self.Ball.GetXPos() < 50) : # have to give the pixels room for error
+                self.Ball.HitPaddle()
+            if (self.Ball.GetXPos() > 550 and self.Ball.GetXPos() < 570) :
+                self.Ball.HitPaddle()
+
             self.screen.fill(c_black)
+
+            self.screen.blit(self.text, self.textRect)
 
             self.Ball.draw(self.screen)
             self.PaddleA.draw(self.screen)
             self.PaddleB.draw(self.screen)
-
-            if (40 == self.Ball.GetXPos()) :
-                self.Ball.HitPaddle()
-            if (550 == self.Ball.GetXPos()) :
-                self.Ball.HitPaddle()
 
             self.clock.tick(60) # regulate FPS
             pygame.display.flip()
