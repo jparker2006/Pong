@@ -16,8 +16,8 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I. -I/usr/lib/qt/mkspecs/linux-g++
+CXXFLAGS      = -pipe -O2 -std=gnu++11 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+INCPATH       = -I. -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I. -I. -I/usr/lib/qt/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -52,8 +52,11 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp 
-OBJECTS       = main.o
+SOURCES       = main.cpp \
+		mainwindow.cpp moc_mainwindow.cpp
+OBJECTS       = main.o \
+		mainwindow.o \
+		moc_mainwindow.o
 DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
@@ -332,7 +335,8 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/exceptions.prf \
 		/usr/lib/qt/mkspecs/features/yacc.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
-		Pong.pro  main.cpp
+		Pong.pro mainwindow.h main.cpp \
+		mainwindow.cpp
 QMAKE_TARGET  = Pong
 DESTDIR       = 
 TARGET        = Pong
@@ -341,7 +345,7 @@ TARGET        = Pong
 first: all
 ####### Build rules
 
-Pong:  $(OBJECTS)  
+Pong: ui_mainwindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: Pong.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspecs/features/spec_pre.prf \
@@ -918,7 +922,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -948,34 +954,61 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
-	g++ -pipe -O2 -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
+	g++ -pipe -O2 -std=gnu++11 -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all:
+compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
+	-$(DEL_FILE) moc_mainwindow.cpp
+moc_mainwindow.cpp: mainwindow.h \
+		moc_predefs.h \
+		/usr/bin/moc
+	/usr/bin/moc $(DEFINES) --include /home/jparker/Pong/c++/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/jparker/Pong/c++ -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11.1.0 -I/usr/include/c++/11.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/11.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all:
+compiler_uic_make_all: ui_mainwindow.h
 compiler_uic_clean:
+	-$(DEL_FILE) ui_mainwindow.h
+ui_mainwindow.h: mainwindow.ui \
+		/usr/bin/uic
+	/usr/bin/uic mainwindow.ui -o ui_mainwindow.h
+
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
 compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean 
+compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
-main.o: main.cpp 
+main.o: main.cpp mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
+
+mainwindow.o: mainwindow.cpp mainwindow.h \
+		ui_mainwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+
+moc_mainwindow.o: moc_mainwindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
 ####### Install
 
-install:  FORCE
+install_target: first FORCE
+	@test -d $(INSTALL_ROOT)/opt/Pong/bin || mkdir -p $(INSTALL_ROOT)/opt/Pong/bin
+	$(QINSTALL_PROGRAM) $(QMAKE_TARGET) $(INSTALL_ROOT)/opt/Pong/bin/$(QMAKE_TARGET)
 
-uninstall:  FORCE
+uninstall_target: FORCE
+	-$(DEL_FILE) $(INSTALL_ROOT)/opt/Pong/bin/$(QMAKE_TARGET)
+	-$(DEL_DIR) $(INSTALL_ROOT)/opt/Pong/bin/ 
+
+
+install: install_target  FORCE
+
+uninstall: uninstall_target  FORCE
 
 FORCE:
 
