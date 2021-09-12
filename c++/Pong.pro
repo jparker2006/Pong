@@ -1,6 +1,8 @@
-TEMPLATE = app
-TARGET = Pong
-INCLUDEPATH += .
-QT += widgets
+QT       += core gui
 
-SOURCES += main.cpp
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = Pong
+TEMPLATE = app
+
+SOURCES += main.cpp\
