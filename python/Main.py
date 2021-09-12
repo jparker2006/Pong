@@ -6,7 +6,8 @@ pygame.init()
 
 resolution = (600,400)
 c_pyYellow = (255,211,67)
-c_pyBlue = (55,118,171)
+c_green = (8,255,8)
+c_red = (255, 6, 8)
 
 class MainGame():
     def __init__(self):
@@ -19,7 +20,7 @@ class MainGame():
         self.PaddleB = Paddle(resolution[0] - 30) # keyup and keydown
 
         self.font = pygame.font.SysFont('cambriacambriamath', 48)
-        self.scoreboard = self.font.render("0 | 0", True, c_pyYellow)
+        self.scoreboard = self.font.render("0 | 0", True, c_red)
         self.scoreFrame = self.scoreboard.get_rect()
         self.scoreFrame.center = (resolution[0] // 2, 30)
 
@@ -42,7 +43,7 @@ class MainGame():
         bGameStarted = True
         while True:
             self.handleEvents()
-            self.screen.fill(c_pyBlue)
+            self.screen.fill(c_green)
 
             self.Ball.draw(self.screen)
             self.PaddleA.draw(self.screen)
@@ -51,14 +52,14 @@ class MainGame():
             self.Ball.update()
 
             # collision detection
-            if (self.Ball.GetXPos() >= 40 and self.Ball.GetXPos() <= 45): # have to give the pixels room for error
-                if (self.Ball.GetYPos() >= self.PaddleA.GetYPos() - 15 and self.Ball.GetYPos() <= self.PaddleA.GetYPos() + 105):
+            if (self.Ball.GetXPos() >= 40 and self.Ball.GetXPos() <= 47): # have to give the pixels room for error
+                if (self.Ball.GetYPos() >= self.PaddleA.GetYPos() - 25 and self.Ball.GetYPos() <= self.PaddleA.GetYPos() + 115):
                     self.Ball.HitPaddle()
-            if (self.Ball.GetXPos() >= 555 and self.Ball.GetXPos() <= 560):
-                if (self.Ball.GetYPos() >= self.PaddleB.GetYPos() - 15 and self.Ball.GetYPos() <= self.PaddleB.GetYPos() + 105):
+            if (self.Ball.GetXPos() >= 550 and self.Ball.GetXPos() <= 557):
+                if (self.Ball.GetYPos() >= self.PaddleB.GetYPos() - 25 and self.Ball.GetYPos() <= self.PaddleB.GetYPos() + 115):
                     self.Ball.HitPaddle()
 
-            self.scoreboard = self.font.render((str)(self.Ball.nPaddleAScore) + " | " + (str)(self.Ball.nPaddleBScore), True, c_pyYellow)
+            self.scoreboard = self.font.render((str)(self.Ball.nPaddleAScore) + " | " + (str)(self.Ball.nPaddleBScore), True, c_red)
             self.screen.blit(self.scoreboard, self.scoreFrame)
 
             self.clock.tick(60) # regulate FPS

@@ -1,7 +1,7 @@
 import pygame, random
 
 resolution = (600,400)
-c_pyYellow = (255,211,67)
+c_yellow = (255,211,67)
 
 class Ball:
     # x position, y position, x velocity, y velocity, ballsize
@@ -16,7 +16,7 @@ class Ball:
         self.type = "Ball"
 
     def draw(self, surface):
-        pygame.draw.circle(surface, c_pyYellow, (self.nXPos, self.nYPos), self.nRadius)
+        pygame.draw.circle(surface, c_yellow, (self.nXPos, self.nYPos), self.nRadius)
 
     def update(self):
         self.nXPos += self.dXVel
